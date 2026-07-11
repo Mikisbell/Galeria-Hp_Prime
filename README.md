@@ -23,8 +23,18 @@ El copyright del código base pertenece a su autor original, Manuel Andrés Vél
 introducidos en esta edición son de Miguel Ángel Rivera Ospina, 2026.
 
 ### Cambios en esta edición
-- **Traducción completa de la interfaz al español** (menús, diálogos y mensajes).
-- Correcciones y mejoras de estabilidad y rendimiento *(en progreso)*.
+- **Traducción completa de la interfaz al español** (menús, diálogos, mensajes y pantalla de bienvenida).
+- **Mejora de rendimiento:** `Center_Fit` ahora calcula el escalado con una fórmula directa
+  (`MIN(320/ancho, 240/alto)`) en lugar del antiguo bucle que reducía la imagen 1% por vuelta.
+  Mismo resultado visual, pero instantáneo — especialmente notable en imágenes grandes.
+- **Corrección de estabilidad:** el diálogo *"Ir a página"* ahora valida el rango del número
+  ingresado. Antes, un número fuera de límites cerraba la app; ahora se ajusta al rango válido.
+
+#### Mejoras pendientes (hoja de ruta)
+- Filtrar la lista para mostrar solo imágenes (`.png`/`.jpg`) y evitar errores al abrir otros archivos.
+- Reemplazar la recursión `Open_File`/`Read_Keyboard` por una máquina de estados (estabilidad con muchas imágenes).
+- Convertir el muro de `IF` de `Read_Keyboard` en un `CASE`; unificar las 4 funciones de scroll duplicadas.
+- Rehacer las imágenes del tutorial embebido en español.
 
 ## ¿Qué es Gallery?
 

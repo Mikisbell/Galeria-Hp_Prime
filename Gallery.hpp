@@ -4,8 +4,9 @@
 //  Platform: HP Prime
 //  Original Dev: Manuel Andres Velez (mandresve@hotmail.com)
 //  Modificado por: Miguel Angel Rivera Ospina ("Belico"), 2026
-//  Cambios: Traduccion completa de la interfaz al espanol.
-//           (correcciones y mejoras en progreso)
+//  Cambios: - Traduccion completa de la interfaz al espanol
+//           - Center_Fit por formula directa (mas rapido que el bucle 1%)
+//           - Validacion de rango en "Ir a pagina" (evita el cierre de la app)
 //  Licencia: GPL-3.0 (se conserva la del proyecto original)
 //---------------------------------------------------------
 
@@ -119,6 +120,17 @@ END;
 VIEW "Ir a página",Go_To_Dialog()
 BEGIN
   INPUT(CURRENT_FILE, "Ir a número de página/archivo","Página: ","Ingresa el número de página o archivo a abrir",1);
+  //MEJORA: valida el rango antes de abrir. Sin esto, un numero
+  //fuera de limites (0, negativo o mayor al total) reventaba la app
+  //al indexar FILE_LIST[CURRENT_FILE] con un indice invalido.
+  IF CURRENT_FILE<1
+  THEN
+    CURRENT_FILE:=1;
+  END;
+  IF CURRENT_FILE>length(FILE_LIST)
+  THEN
+    CURRENT_FILE:=length(FILE_LIST);
+  END;
   Open_File();
 END;
 
@@ -407,48 +419,45 @@ END;
 
 
 //----Center & Fit Image to Screen----
-Center_Fit() 
+Center_Fit()
 BEGIN
+  LOCAL SCALE;
   X_AXIS_SHIFT:=0;
   Y_AXIS_SHIFT:=0;
   IMAGE_WIDTH:=GROBW_P(G1);
   IMAGE_HEIGHT:=GROBH_P(G1);
 
+  //MEJORA: escalado por formula directa en vez del antiguo
+  //bucle iterativo que reducia 1% por vuelta (lento). El factor
+  //de escala se calcula de una sola pasada. Mismo resultado, instantaneo.
   IF EXPAND_IMAGE_TO_FULL_SCREEN==0
   THEN
 
-    IF IMAGE_WIDTH>320 
-    THEN 
-      REPEAT
-        IMAGE_WIDTH:=IMAGE_WIDTH-(IMAGE_WIDTH/100);
-        IMAGE_HEIGHT:=IMAGE_HEIGHT-(IMAGE_HEIGHT/100);
-      UNTIL IMAGE_WIDTH<320;
-    END;
-
-    IF IMAGE_HEIGHT>240
-    THEN 
-      REPEAT
-        IMAGE_WIDTH:=IMAGE_WIDTH-(IMAGE_WIDTH/100);
-        IMAGE_HEIGHT:=IMAGE_HEIGHT-(IMAGE_HEIGHT/100);
-      UNTIL IMAGE_HEIGHT<240;
+    //Modo "contener": si la imagen excede la pantalla, se reduce
+    //hasta que quepa completa (ancho<=320 y alto<=240).
+    IF IMAGE_WIDTH>320 OR IMAGE_HEIGHT>240
+    THEN
+      SCALE:=MIN(320/IMAGE_WIDTH, 240/IMAGE_HEIGHT);
+      IMAGE_WIDTH:=IMAGE_WIDTH*SCALE;
+      IMAGE_HEIGHT:=IMAGE_HEIGHT*SCALE;
     END;
 
   ELSE
 
-    IF IMAGE_WIDTH>320 
-    THEN 
-      REPEAT
-        IMAGE_WIDTH:=IMAGE_WIDTH-(IMAGE_WIDTH/100);
-        IMAGE_HEIGHT:=IMAGE_HEIGHT-(IMAGE_HEIGHT/100);
-      UNTIL IMAGE_WIDTH<320;
+    //Modo "llenar": ajusta el ancho a 320 si lo excede, luego
+    //agranda hasta cubrir el alto de 240.
+    IF IMAGE_WIDTH>320
+    THEN
+      SCALE:=320/IMAGE_WIDTH;
+      IMAGE_WIDTH:=IMAGE_WIDTH*SCALE;
+      IMAGE_HEIGHT:=IMAGE_HEIGHT*SCALE;
     END;
 
     IF IMAGE_HEIGHT<240
-    THEN 
-      REPEAT
-        IMAGE_WIDTH:=IMAGE_WIDTH+(IMAGE_WIDTH/100);
-        IMAGE_HEIGHT:=IMAGE_HEIGHT+(IMAGE_HEIGHT/100);
-      UNTIL IMAGE_HEIGHT>240;
+    THEN
+      SCALE:=240/IMAGE_HEIGHT;
+      IMAGE_WIDTH:=IMAGE_WIDTH*SCALE;
+      IMAGE_HEIGHT:=IMAGE_HEIGHT*SCALE;
     END;
 
   END;
