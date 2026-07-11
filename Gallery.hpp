@@ -1,9 +1,12 @@
 //---------------------------------------------------------
-//  Name: Gallery
-//  Current Ver: 2.4.0
+//  Name: Gallery (Edicion Espanol)
+//  Base Ver: 2.4.0
 //  Platform: HP Prime
-//  Dev: Manuel Velez
-//  Licence: GPL
+//  Original Dev: Manuel Andres Velez (mandresve@hotmail.com)
+//  Modificado por: Miguel Angel Rivera Ospina ("Belico"), 2026
+//  Cambios: Traduccion completa de la interfaz al espanol.
+//           (correcciones y mejoras en progreso)
+//  Licencia: GPL-3.0 (se conserva la del proyecto original)
 //---------------------------------------------------------
 
 //---------------------------------------------------------
@@ -79,12 +82,12 @@ NumSetScroll_Down() BEGIN END;
 //----Help Dialog----
 //This dialog must be named START
 //Because it's the main screen
-VIEW "Help",START()
+VIEW "Ayuda",START()
 BEGIN 
   IF POS(AFiles(),"icon.png")==0
   THEN
     PRINT();
-    PRINT("Sorry, the Gallery APP is corrupted and cannot be started. Please reinstall it from the original source.");
+    PRINT("La aplicación Gallery está dañada y no puede iniciarse. Reinstálala desde la fuente original.");
     STARTVIEW(-4,1);
     KILL;
   ELSE
@@ -99,52 +102,52 @@ END;
 
 
 //----Open File Dialog----
-VIEW "Open Files",Open_File_Dialog()
+VIEW "Abrir archivos",Open_File_Dialog()
 BEGIN
   IF length(FILE_LIST)>0
   THEN
-    CHOOSE(CURRENT_FILE, "Select File to Open", FILE_LIST);
+    CHOOSE(CURRENT_FILE, "Selecciona el archivo a abrir", FILE_LIST);
     Open_File();
   ELSE
-    MSGBOX("There are no files to open.");
+    MSGBOX("No hay archivos para abrir.");
     START();
   END;
 END;
 
 
 //----Open Page Dialog----
-VIEW "Open Page Number",Go_To_Dialog()
+VIEW "Ir a página",Go_To_Dialog()
 BEGIN
-  INPUT(CURRENT_FILE, "Go to page/file number","Page: ","Enter page or file number to open",1);
+  INPUT(CURRENT_FILE, "Ir a número de página/archivo","Página: ","Ingresa el número de página o archivo a abrir",1);
   Open_File();
 END;
 
 
 //----Delete File Dialog----
-VIEW "Delete Files",DELETE()
+VIEW "Eliminar archivos",DELETE()
 BEGIN 
   IF length(FILE_LIST)>0
   THEN
     Delete_Menu();
   ELSE
-    MSGBOX("There are no files to delete.");
+    MSGBOX("No hay archivos para eliminar.");
     START();
   END;
 END;
 
 //----Options Dialog----
-VIEW "Options",OPTIONS()
+VIEW "Opciones",OPTIONS()
 BEGIN
-INPUT( {{IMAGE_INFO,1}, {DARK_MODE,1}, {EXPAND_IMAGE_TO_FULL_SCREEN,1}, {REVERSE_ORDER,1}, {SCROLL_SPEED,[1]}, {TZ_ZOOM_SENSITIVITY,[0]}}, "Gallery Options", {"Image Info","Invert Colors","Fit-To-Screen","Reverse Order","Scroll Speed", "Touch Zoom Sensitivity"},{"Show OSD with the image name and number","Invert colors to negative (Dark Mode)","Fit Image to Full Width or Height automatically","Reverse order in Open Files list","Scroll Speed when using keyboard (Default 2)","Touch Zoom Sensitivity value (Default 0.025)"});
+INPUT( {{IMAGE_INFO,1}, {DARK_MODE,1}, {EXPAND_IMAGE_TO_FULL_SCREEN,1}, {REVERSE_ORDER,1}, {SCROLL_SPEED,[1]}, {TZ_ZOOM_SENSITIVITY,[0]}}, "Opciones de Gallery", {"Info de imagen","Invertir colores","Ajustar a pantalla","Orden inverso","Vel. desplazamiento", "Sensibilidad zoom táctil"},{"Muestra el nombre y número de la imagen en pantalla","Invierte los colores a negativo (Modo oscuro)","Ajusta la imagen al ancho o alto completo automáticamente","Invierte el orden en la lista Abrir archivos","Velocidad de desplazamiento con el teclado (Predet. 2)","Sensibilidad del zoom táctil (Predet. 0.025)"});
 START();
 RETURN;
 END;
 
 
 //----About Dialog----
-VIEW "About Gallery",ABOUT()
+VIEW "Acerca de Gallery",ABOUT()
 BEGIN 
-  MSGBOX("Gallery: The HP Prime PNG & JPG Image Viewer! V2.4.0 Manuel Andrés Vélez, 2023. Write me at: mandresve@hotmail.com");
+  MSGBOX("Gallery: ¡El visor de imágenes PNG y JPG para HP Prime! Original: Manuel Andrés Vélez, 2023 (mandresve@hotmail.com). Edición Español y mejoras: Miguel Ángel Rivera Ospina 'Belico', 2026. Licencia GPL-3.0.");
 END;
 
 
@@ -157,7 +160,7 @@ END;
 Delete_Menu()
 BEGIN 
   LOCAL USER_CHOICE:=0;
-  CHOOSE(USER_CHOICE, "Delete Files?", "Select File", "All Files", "Cancel");
+  CHOOSE(USER_CHOICE, "¿Eliminar archivos?", "Seleccionar archivo", "Todos los archivos", "Cancelar");
 
   IF USER_CHOICE==1 
   THEN
@@ -339,21 +342,21 @@ END;
 //----Delete File----
 Delete_File()
 BEGIN 
-  CHOOSE(CURRENT_FILE, "Select File to Delete...", FILE_LIST);
+  CHOOSE(CURRENT_FILE, "Selecciona el archivo a eliminar...", FILE_LIST);
   LOCAL USER_CHOICE:=0;
-  CHOOSE(USER_CHOICE, "Are You Sure to Delete?", "Yes", "No");
+  CHOOSE(USER_CHOICE, "¿Seguro que deseas eliminar?", "Sí", "No");
 
     IF USER_CHOICE==1 
     THEN
       DelAFiles(FILE_LIST[CURRENT_FILE]);
-      MSGBOX("File Deleted.");
+      MSGBOX("Archivo eliminado.");
       START();
       RETURN;
     END;
 
     IF USER_CHOICE==2
     THEN
-      MSGBOX("No Files were Deleted.");
+      MSGBOX("No se eliminó ningún archivo.");
     START();
     RETURN;
     END;
@@ -365,7 +368,7 @@ END;
 Delete_All_Files()
 BEGIN
   LOCAL USER_CHOICE:=0;
-  CHOOSE(USER_CHOICE, "Delete All Files?", "Yes", "No");
+  CHOOSE(USER_CHOICE, "¿Eliminar todos los archivos?", "Sí", "No");
 
   IF USER_CHOICE==1
   THEN
@@ -379,11 +382,11 @@ BEGIN
         DelAFiles(AFiles(2));
       END;
     END;
-    MSGBOX("All Files were Deleted!");
+    MSGBOX("¡Se eliminaron todos los archivos!");
     START();
     RETURN;
   ELSE
-    MSGBOX("No Files Deleted.");
+    MSGBOX("No se eliminó ningún archivo.");
     START();
     RETURN;
   END;
