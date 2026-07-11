@@ -58,9 +58,28 @@ y navegación entre múltiples imágenes, tanto con el teclado como con la panta
    que la app funcione. Si falta `icon.png`, la app se declara dañada y no inicia.
 3. Vuelve a arrastrar la carpeta `Gallery.hpappdir` a "Application Library" para transferirla.
 
-**Especificaciones recomendadas:** 320×240 px, 8 bits de profundidad. La app soporta cualquier
-tamaño, pero estas medidas dan la mejor fluidez. Comprimir las imágenes antes de subirlas
-mejora el rendimiento y el espacio.
+**Especificaciones recomendadas:** hasta **640×480 px** (o 320×240 para máximo ahorro). La app
+soporta cualquier tamaño, pero conviene no exceder esas medidas.
+
+> ⚠️ **Importante — memoria:** la HP Prime no se queda sin memoria por el *peso* del archivo,
+> sino por la *resolución*. Al mostrar una imagen la calculadora la descomprime a píxeles crudos
+> en la RAM: una foto de 12 MP (4000×3000) ocupa ~24 MB descomprimida y da **"memoria insuficiente"**.
+> Redúcelas antes de subirlas.
+
+### Herramienta incluida: `preparar_imagenes.py`
+
+Esta edición incluye un script que redimensiona y optimiza tus fotos en lote para que quepan
+sin problema en la calculadora. Requiere Python con Pillow (`pip install Pillow`).
+
+```bash
+# Deja las fotos listas en la carpeta "listas/"
+python tools/preparar_imagenes.py mis_fotos
+
+# Máximo ahorro de memoria (tamaño exacto de la pantalla)
+python tools/preparar_imagenes.py mis_fotos --max 320x240
+```
+
+Una foto de 10 MB (12 MP) queda en ~48 KB, lista para la Galería, sin pérdida visible en pantalla.
 
 ## Cómo se usa
 

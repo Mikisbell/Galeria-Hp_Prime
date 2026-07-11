@@ -1,0 +1,10 @@
+# Basura de sistema operativo
+.DS_Store
+Thumbs.db
+
+# Salida de la herramienta de preparación de imágenes
+listas/
+
+# Python
+__pycache__/
+*.pyc
