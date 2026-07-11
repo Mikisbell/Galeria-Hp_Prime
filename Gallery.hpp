@@ -419,45 +419,52 @@ END;
 
 
 //----Center & Fit Image to Screen----
+//NOTA: versión original restaurada. El escalado por fórmula directa
+//(MIN(320/w,240/h)) se revirtió porque bajo #pragma integer(h32) la
+//división podía dar 0 y dejar la imagen en 0x0 (pantalla negra).
+//Se reintentará SOLO tras probarlo en el emulador.
 Center_Fit()
 BEGIN
-  LOCAL SCALE;
   X_AXIS_SHIFT:=0;
   Y_AXIS_SHIFT:=0;
   IMAGE_WIDTH:=GROBW_P(G1);
   IMAGE_HEIGHT:=GROBH_P(G1);
 
-  //MEJORA: escalado por formula directa en vez del antiguo
-  //bucle iterativo que reducia 1% por vuelta (lento). El factor
-  //de escala se calcula de una sola pasada. Mismo resultado, instantaneo.
   IF EXPAND_IMAGE_TO_FULL_SCREEN==0
   THEN
 
-    //Modo "contener": si la imagen excede la pantalla, se reduce
-    //hasta que quepa completa (ancho<=320 y alto<=240).
-    IF IMAGE_WIDTH>320 OR IMAGE_HEIGHT>240
+    IF IMAGE_WIDTH>320
     THEN
-      SCALE:=MIN(320/IMAGE_WIDTH, 240/IMAGE_HEIGHT);
-      IMAGE_WIDTH:=IMAGE_WIDTH*SCALE;
-      IMAGE_HEIGHT:=IMAGE_HEIGHT*SCALE;
+      REPEAT
+        IMAGE_WIDTH:=IMAGE_WIDTH-(IMAGE_WIDTH/100);
+        IMAGE_HEIGHT:=IMAGE_HEIGHT-(IMAGE_HEIGHT/100);
+      UNTIL IMAGE_WIDTH<320;
+    END;
+
+    IF IMAGE_HEIGHT>240
+    THEN
+      REPEAT
+        IMAGE_WIDTH:=IMAGE_WIDTH-(IMAGE_WIDTH/100);
+        IMAGE_HEIGHT:=IMAGE_HEIGHT-(IMAGE_HEIGHT/100);
+      UNTIL IMAGE_HEIGHT<240;
     END;
 
   ELSE
 
-    //Modo "llenar": ajusta el ancho a 320 si lo excede, luego
-    //agranda hasta cubrir el alto de 240.
     IF IMAGE_WIDTH>320
     THEN
-      SCALE:=320/IMAGE_WIDTH;
-      IMAGE_WIDTH:=IMAGE_WIDTH*SCALE;
-      IMAGE_HEIGHT:=IMAGE_HEIGHT*SCALE;
+      REPEAT
+        IMAGE_WIDTH:=IMAGE_WIDTH-(IMAGE_WIDTH/100);
+        IMAGE_HEIGHT:=IMAGE_HEIGHT-(IMAGE_HEIGHT/100);
+      UNTIL IMAGE_WIDTH<320;
     END;
 
     IF IMAGE_HEIGHT<240
     THEN
-      SCALE:=240/IMAGE_HEIGHT;
-      IMAGE_WIDTH:=IMAGE_WIDTH*SCALE;
-      IMAGE_HEIGHT:=IMAGE_HEIGHT*SCALE;
+      REPEAT
+        IMAGE_WIDTH:=IMAGE_WIDTH+(IMAGE_WIDTH/100);
+        IMAGE_HEIGHT:=IMAGE_HEIGHT+(IMAGE_HEIGHT/100);
+      UNTIL IMAGE_HEIGHT>240;
     END;
 
   END;
